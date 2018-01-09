@@ -27,9 +27,16 @@ namespace arrays {
 class bitarray {
 public:
     explicit bitarray(std::size_t length)
-        : m_size((length > k_max_length) ? k_max_length : length)
     {
-        m_array = new () std::int_fast32_t[size];
+        if (length > k_max_length) {
+            m_length = k_max_length;
+        } else if (length < k_min_length) {
+            m_length = k_min_length;
+        } else {
+            m_length = length;
+        }
+        m_array = new std::int_fast32_t[m_length / (sizeof(std::int_fast32_t) * 8)];
+
     }
 
     ~bitarray() {
@@ -38,12 +45,14 @@ public:
     }
 
 private:
-    std::size_t m_size;
+    std::size_t m_length;
     std::int_fast32_t* m_array;
     std::int_fast32_t m_fallback[];
 
 private:
     static const k_max_length = 100 * 1024 * 1024; // 100Mb
+    static const k_bits_in_type = sizeof(std::int_fast32_t) * 8;
+    static const k_min_length = 10 * k_bits_in_type;
 };
 
 }
