@@ -1,3 +1,27 @@
+/*
+
+ Copyright (c) 2018 Vardan Grigoryan (vardanator)
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+ OR OTHER DEALINGS IN THE SOFTWARE.
+
+*/
+
 #ifndef ULTRON_ARRAYS_BITARRAY_H
 #define ULTRON_ARRAYS_BITARRAY_H
 
@@ -24,35 +48,37 @@ namespace arrays {
  * set_all() - set all bits
  */
 
-class bitarray {
+class BitArray {
 public:
-    explicit bitarray(std::size_t length)
+    explicit BitArray(std::size_t length)
     {
-        if (length > k_max_length) {
-            m_length = k_max_length;
-        } else if (length < k_min_length) {
-            m_length = k_min_length;
+        if (length > kMaxLength) {
+            length_ = kMaxLength;
+        } else if (length < kMinLength) {
+            length_ = kMinLength;
         } else {
-            m_length = length;
+            length_ = length;
         }
-        m_array = new std::int_fast32_t[m_length / (sizeof(std::int_fast32_t) * 8)];
-
+        byte_array_ = new std::int_fast32_t[length_ / kBitsInType + kBitsInType];
     }
 
-    ~bitarray() {
-        delete [] m_array;
-        m_array = nullptr;
+
+
+
+    ~BitArray() {
+        delete [] byte_array_;
+        byte_array_ = nullptr;
     }
 
 private:
-    std::size_t m_length;
-    std::int_fast32_t* m_array;
-    std::int_fast32_t m_fallback[];
+    std::size_t length_;
+    std::int_fast32_t* byte_array_;
+    std::int_fast32_t fallback_[];
 
 private:
-    static const k_max_length = 100 * 1024 * 1024; // 100Mb
-    static const k_bits_in_type = sizeof(std::int_fast32_t) * 8;
-    static const k_min_length = 10 * k_bits_in_type;
+    static const int kMaxLength = 100 * 1024 * 1024; // 100Mb
+    static const int kBitsInType = sizeof(std::int_fast32_t) * 8;
+    static const int kMinLength = 10 * kBitsInType;
 };
 
 }
