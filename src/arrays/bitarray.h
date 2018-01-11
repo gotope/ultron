@@ -1,33 +1,19 @@
-/*
-
- Copyright (c) 2018 Vardan Grigoryan (vardanator)
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
- OR OTHER DEALINGS IN THE SOFTWARE.
-
-*/
+/**
+ * Copyright (c) 2018, Vardan Grigoryan (vardanator)
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 #ifndef ULTRON_ARRAYS_BITARRAY_H
 #define ULTRON_ARRAYS_BITARRAY_H
 
+#include <limits>
 #include <cstddef>
 #include <cstdint>
-#include <limits>
+#include <cstring>
+
+#include "./../core/utility.h"
 
 namespace ultron {
 
@@ -59,10 +45,24 @@ public:
         } else {
             length_ = length;
         }
-        byte_array_ = new std::int_fast32_t[length_ / kBitsInType + kBitsInType];
+        inner_array_size_ = length_ / kBitsInType + 1;
+        byte_array_ = new std::int_fast32_t[inner_array_size_];
+        std::memset(byte_array_, '\0', inner_array_size_ * kSizeOfType);
     }
 
+    bool toggle(int i) {
+        return false;
+    }
 
+    void print() const {
+        core::Utility::LogFastIntArrayBytes(byte_array_, inner_array_size_);
+        std::cout << std::endl;
+    }
+
+    void printBits() const {
+        core::Utility::LogFastIntArrayBits(byte_array_, inner_array_size_);
+        std::cout << std::endl;
+    }
 
 
     ~BitArray() {
@@ -72,13 +72,15 @@ public:
 
 private:
     std::size_t length_;
+    std::size_t inner_array_size_;
     std::int_fast32_t* byte_array_;
     std::int_fast32_t fallback_[];
 
 private:
     static const int kMaxLength = 100 * 1024 * 1024; // 100Mb
-    static const int kBitsInType = sizeof(std::int_fast32_t) * 8;
-    static const int kMinLength = 10 * kBitsInType;
+    static const int kSizeOfType = sizeof(std::int_fast32_t);
+    static const int kBitsInType = kSizeOfType * 8;
+    static const int kMinLength = kBitsInType;
 };
 
 }
