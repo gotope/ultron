@@ -73,6 +73,12 @@ public:
         byte_array_[index_and_bit_offset.first] &= ~(1 << index_and_bit_offset.second);
     }
 
+    bool operator[](std::size_t i) {
+        if (i > length_) return false;
+        auto index_and_bit_offset = GetEffectiveIndexAndBit_(i);
+        return byte_array_[index_and_bit_offset.first] & (1 << index_and_bit_offset.second);
+    }
+
     void print() const {
         core::Utility::LogFastIntArrayBytes(byte_array_, inner_array_size_);
         std::cout << std::endl;

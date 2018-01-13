@@ -99,6 +99,13 @@ struct BitArrayTester {
             b.unset(0);
             b.printBits();
             std::cout << "Unset completed, check the results above" << std::endl;
+            std::cout << "Final results for 0, 1, 5, 20, 33, 49 bits" << std::endl;
+            std::cout << "0: " << b[0] << std::endl;
+            std::cout << "1: " << b[1] << std::endl;
+            std::cout << "5: " << b[5] << std::endl;
+            std::cout << "20: " << b[20] << std::endl;
+            std::cout << "33: " << b[33] << std::endl;
+            std::cout << "49: " << b[49] << std::endl;
         } catch (...) {
             std::cout << "Set/unset - [FAIL]" << std::endl;
         }
