@@ -10,6 +10,7 @@
 
 #include "types.h"
 #include "./arrays/bitarray.h"
+#include "./arrays/bitboard.h"
 
 void print_help();
 
@@ -22,9 +23,14 @@ int main(int argc, char** argv) {
     if (test_type == ultron::tests::Types::BIT_ARRAY) {
         ultron::tests::BitArrayTester::RunAllTests();
     }
+
+    if (test_type == ultron::tests::Types::BIT_BOARD) {
+        ultron::tests::BitBoardTester::RunAllTests();
+    }
 }
 
 void print_help() {
     std::cout << "Usage: './runner option', where option might be one of " << std::endl;
     std::cout << "\tbitarray - test bitarray" << std::endl;
+    std::cout << "\tbitboard - test bitboard" << std::endl;
 }

@@ -26,11 +26,11 @@ namespace arrays {
  * to set, use the same [] operator
  *
  * toggle(i) - toggles i-th bit (XOR)
- * and(num) - AND
- * or(num) - OR
- * xor(num) - XOR
- * unset_all() - zero all bits
- * set_all() - set all bits
+ * and(num) - AND, still thinking the best interface to provide
+ * or(num) - OR, still thinking the best interface to provide
+ * xor(num) - XOR, still thinking the best interface to provide
+ * unset_all() - zero all bits, not yet necessary
+ * set_all() - set all bits, not yet necessary
  */
 
 class BitArray {
@@ -49,6 +49,12 @@ public:
         std::memset(byte_array_, '\0', inner_array_size_ * kSizeOfType);
     }
 
+    ~BitArray() {
+        delete [] byte_array_;
+        byte_array_ = nullptr;
+    }
+
+public:
     bool toggle(std::size_t i) {
         if (i > length_) return false;
         auto index_and_bit_offset = GetEffectiveIndexAndBit_(i);
@@ -89,12 +95,6 @@ public:
         std::cout << std::endl;
     }
 
-
-    ~BitArray() {
-        delete [] byte_array_;
-        byte_array_ = nullptr;
-    }
-
     // helpers
 private:
     std::pair<std::size_t, std::size_t> GetEffectiveIndexAndBit_(std::size_t i) {
@@ -107,13 +107,12 @@ private:
     std::size_t length_;
     std::size_t inner_array_size_;
     std::int_fast32_t* byte_array_;
-    std::int_fast32_t fallback_[];
 
 private:
-    static const int kMaxLength = 100 * 1024 * 1024; // 100Mb
-    static const int kSizeOfType = sizeof(std::int_fast32_t);
-    static const int kBitsInType = kSizeOfType * 8;
-    static const int kMinLength = kBitsInType;
+    static const std::size_t kMaxLength = 100 * 1024 * 1024; // 100Mb
+    static const std::size_t kSizeOfType = sizeof(std::int_fast32_t);
+    static const std::size_t kBitsInType = kSizeOfType * 8;
+    static const std::size_t kMinLength = kBitsInType;
 };
 
 }

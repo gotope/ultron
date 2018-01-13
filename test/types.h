@@ -14,9 +14,11 @@ namespace tests {
 
 struct Types {
     static std::string BIT_ARRAY;
+    static std::string BIT_BOARD;
 };
 
 std::string Types::BIT_ARRAY = "bitarray";
+std::string Types::BIT_BOARD = "bitboard";
 
 }
 
