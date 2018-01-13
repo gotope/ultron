@@ -12,6 +12,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <iomanip>
 
 #include "./../core/utility.h"
 
@@ -51,7 +52,12 @@ public:
     }
 
     bool toggle(int i) {
-        return false;
+        if (i < 0 || i > length_) return false;
+        std::size_t inner_array_index = i / kBitsInType;
+        std::size_t bit_offset  = i - (inner_array_index * kBitsInType);
+        // toggle array's 'inner_array_index' element's 'bit_offset'th bit
+        byte_array_[inner_array_index] ^= (1 << bit_offset);
+        return (bool)(byte_array_[inner_array_index] & (1 << bit_offset));
     }
 
     void print() const {
