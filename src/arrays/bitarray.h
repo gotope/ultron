@@ -12,7 +12,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include <iomanip>
+#include <utility>
 
 #include "./../core/utility.h"
 
@@ -26,8 +26,6 @@ namespace arrays {
  * to set, use the same [] operator
  *
  * toggle(i) - toggles i-th bit (XOR)
- * invert(i) - invert i-th bit (NOT)
- * invert_all() - invert all bits
  * and(num) - AND
  * or(num) - OR
  * xor(num) - XOR
@@ -51,13 +49,28 @@ public:
         std::memset(byte_array_, '\0', inner_array_size_ * kSizeOfType);
     }
 
-    bool toggle(int i) {
-        if (i < 0 || i > length_) return false;
-        std::size_t inner_array_index = i / kBitsInType;
-        std::size_t bit_offset  = i - (inner_array_index * kBitsInType);
+    bool toggle(std::size_t i) {
+        if (i > length_) return false;
+        auto index_and_bit_offset = GetEffectiveIndexAndBit_(i);
         // toggle array's 'inner_array_index' element's 'bit_offset'th bit
-        byte_array_[inner_array_index] ^= (1 << bit_offset);
-        return (bool)(byte_array_[inner_array_index] & (1 << bit_offset));
+        byte_array_[index_and_bit_offset.first] ^= (1 << index_and_bit_offset.second);
+        return (bool)(byte_array_[index_and_bit_offset.first] & (1 << index_and_bit_offset.second));
+    }
+
+    bool invert(std::size_t i) {
+        return toggle(i);
+    }
+
+    void set(std::size_t i) {
+        if (i > length_) return;
+        auto index_and_bit_offset = GetEffectiveIndexAndBit_(i);
+        byte_array_[index_and_bit_offset.first] |= (1 << index_and_bit_offset.second);
+    }
+
+    void unset(std::size_t i) {
+        if (i > length_) return;
+        auto index_and_bit_offset = GetEffectiveIndexAndBit_(i);
+        byte_array_[index_and_bit_offset.first] &= ~(1 << index_and_bit_offset.second);
     }
 
     void print() const {
@@ -74,6 +87,14 @@ public:
     ~BitArray() {
         delete [] byte_array_;
         byte_array_ = nullptr;
+    }
+
+    // helpers
+private:
+    std::pair<std::size_t, std::size_t> GetEffectiveIndexAndBit_(std::size_t i) {
+        std::size_t inner_array_index = i / kBitsInType;
+        std::size_t bit_offset  = i - (inner_array_index * kBitsInType);
+        return std::make_pair(inner_array_index, bit_offset);
     }
 
 private:

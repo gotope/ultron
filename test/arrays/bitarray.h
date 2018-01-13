@@ -22,6 +22,7 @@ struct BitArrayTester {
         TestCreation();
         TestPrinting();
         TestToggle();
+        TestSetUnset();
     }
 
     static void TestCreation() {
@@ -76,6 +77,30 @@ struct BitArrayTester {
             std::cout << "Toggling back test completed, check results above" << std::endl;
         } catch (...) {
             std::cout << "Toggling - [FAIL]" << std::endl;
+        }
+    }
+
+    static void TestSetUnset() {
+        try {
+            ultron::arrays::BitArray b(100);
+            std::cout << "Before set " << std::endl;
+            b.printBits();
+            std::cout << "Set 1, 5, 33, 49" << std::endl;
+            b.set(1);
+            b.set(5);
+            b.set(33);
+            b.set(49);
+            b.printBits();
+            std::cout << "Set completed, check the results above" << std::endl;
+            std::cout << "Unset 1, 33, 20, 0" << std::endl;
+            b.unset(1);
+            b.unset(33);
+            b.unset(20);
+            b.unset(0);
+            b.printBits();
+            std::cout << "Unset completed, check the results above" << std::endl;
+        } catch (...) {
+            std::cout << "Set/unset - [FAIL]" << std::endl;
         }
     }
 
