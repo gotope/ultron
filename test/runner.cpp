@@ -11,6 +11,7 @@
 #include "types.h"
 #include "./arrays/bitarray.h"
 #include "./arrays/bitboard.h"
+#include "./arrays/circular-buffer.h"
 
 void print_help();
 
@@ -26,6 +27,10 @@ int main(int argc, char** argv) {
 
     if (test_type == ultron::tests::Types::BIT_BOARD) {
         ultron::tests::BitBoardTester::RunAllTests();
+    }
+
+    if (test_type == ultron::tests::Types::CIRCULAR_BUFFER) {
+        ultron::tests::CircularBufferTester::RunAllTests();
     }
 }
 
