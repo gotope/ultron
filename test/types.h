@@ -16,14 +16,15 @@ struct Types {
     static std::string BIT_ARRAY;
     static std::string BIT_BOARD;
     static std::string CIRCULAR_BUFFER;
+    static std::string DYNAMIC_ARRAY;
 };
 
 std::string Types::BIT_ARRAY = "bitarray";
 std::string Types::BIT_BOARD = "bitboard";
 std::string Types::CIRCULAR_BUFFER = "circular-buffer";
+std::string Types::DYNAMIC_ARRAY = "dynamic-array";
 
-}
-
-}
+} // namepsace tests
+} // namespace ultron
 
 #endif // ULTRON_TEST_TYPES_H

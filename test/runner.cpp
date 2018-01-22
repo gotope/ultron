@@ -7,35 +7,44 @@
 
 #include <string>
 #include <iostream>
+#include <unordered_map>
 
 #include "types.h"
 #include "./arrays/bitarray.h"
 #include "./arrays/bitboard.h"
 #include "./arrays/circular-buffer.h"
+#include "./arrays/dynamic-array.h"
 
 void print_help();
 
 int main(int argc, char** argv) {
     if (argc < 2) {
         print_help();
-        return 0;
+        return 1;
     }
+
+    namespace Tests = ultron::tests;
+    using TestTypes = Tests::Types;
+    std::unordered_map<std::string, void (*)()> runners;
+    runners[TestTypes::BIT_ARRAY] = Tests::BitArrayTester::RunAllTests;
+    runners[TestTypes::BIT_BOARD] = Tests::BitBoardTester::RunAllTests;
+    runners[TestTypes::CIRCULAR_BUFFER] = Tests::CircularBufferTester::RunAllTests;
+    runners[TestTypes::DYNAMIC_ARRAY] = Tests::DynamicArrayTester::RunAllTests;
+
     std::string test_type = argv[1];
-    if (test_type == ultron::tests::Types::BIT_ARRAY) {
-        ultron::tests::BitArrayTester::RunAllTests();
+    if (runners.count(test_type) == 0) {
+        print_help();
+        return 2;
     }
+    runners[test_type]();
 
-    if (test_type == ultron::tests::Types::BIT_BOARD) {
-        ultron::tests::BitBoardTester::RunAllTests();
-    }
-
-    if (test_type == ultron::tests::Types::CIRCULAR_BUFFER) {
-        ultron::tests::CircularBufferTester::RunAllTests();
-    }
+    return 0;
 }
 
 void print_help() {
     std::cout << "Usage: './runner option', where option might be one of " << std::endl;
     std::cout << "\tbitarray - test bitarray" << std::endl;
     std::cout << "\tbitboard - test bitboard" << std::endl;
+    std::cout << "\tcircular-buffer - test circular buffer" << std::endl;
+    std::cout << "\tdynamic-array - test dynamic array" << std::endl;
 }
