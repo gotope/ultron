@@ -15,6 +15,8 @@
 #include "./arrays/circular-buffer.h"
 #include "./arrays/dynamic-array.h"
 
+#include "./lists/doubly-linked-list.h"
+
 void print_help();
 
 int main(int argc, char** argv) {
@@ -30,6 +32,7 @@ int main(int argc, char** argv) {
     runners[TestTypes::BIT_BOARD] = Tests::BitBoardTester::RunAllTests;
     runners[TestTypes::CIRCULAR_BUFFER] = Tests::CircularBufferTester::RunAllTests;
     runners[TestTypes::DYNAMIC_ARRAY] = Tests::DynamicArrayTester::RunAllTests;
+    runners[TestTypes::DOUBLY_LINKED_LIST] = Tests::DoublyLinkedListTester::RunAllTests;
 
     std::string test_type = argv[1];
     if (runners.count(test_type) == 0) {
@@ -42,9 +45,11 @@ int main(int argc, char** argv) {
 }
 
 void print_help() {
+    using TestTypes = ultron::tests::Types;
     std::cout << "Usage: './runner option', where option might be one of " << std::endl;
-    std::cout << "\tbitarray - test bitarray" << std::endl;
-    std::cout << "\tbitboard - test bitboard" << std::endl;
-    std::cout << "\tcircular-buffer - test circular buffer" << std::endl;
-    std::cout << "\tdynamic-array - test dynamic array" << std::endl;
+    std::cout << "\t" << TestTypes::BIT_ARRAY << " - test bitarray" << std::endl;
+    std::cout << "\t" << TestTypes::BIT_BOARD << " - test bitboard" << std::endl;
+    std::cout << "\t" << TestTypes::CIRCULAR_BUFFER << " - test circular buffer" << std::endl;
+    std::cout << "\t" << TestTypes::DYNAMIC_ARRAY << " - test dynamic array" << std::endl;
+    std::cout << "\t" << TestTypes::DOUBLY_LINKED_LIST << " - test doubly linked list" << std::endl;
 }
