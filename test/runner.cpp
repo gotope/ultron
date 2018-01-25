@@ -16,6 +16,7 @@
 #include "./arrays/dynamic-array.h"
 
 #include "./lists/doubly-linked-list.h"
+#include "./lists/self-organizing-sorted-list.h"
 
 void print_help();
 
@@ -32,7 +33,9 @@ int main(int argc, char** argv) {
     runners[TestTypes::BIT_BOARD] = Tests::BitBoardTester::RunAllTests;
     runners[TestTypes::CIRCULAR_BUFFER] = Tests::CircularBufferTester::RunAllTests;
     runners[TestTypes::DYNAMIC_ARRAY] = Tests::DynamicArrayTester::RunAllTests;
+
     runners[TestTypes::DOUBLY_LINKED_LIST] = Tests::DoublyLinkedListTester::RunAllTests;
+    runners[TestTypes::SELF_ORGANIZING_SORTED_LIST] = Tests::SelfOrganizingSortedListTester::RunAllTests;
 
     std::string test_type = argv[1];
     if (runners.count(test_type) == 0) {
@@ -52,4 +55,5 @@ void print_help() {
     std::cout << "\t" << TestTypes::CIRCULAR_BUFFER << " - test circular buffer" << std::endl;
     std::cout << "\t" << TestTypes::DYNAMIC_ARRAY << " - test dynamic array" << std::endl;
     std::cout << "\t" << TestTypes::DOUBLY_LINKED_LIST << " - test doubly linked list" << std::endl;
+    std::cout << "\t" << TestTypes::SELF_ORGANIZING_SORTED_LIST << " - test self organizing sorted linked list" << std::endl;
 }

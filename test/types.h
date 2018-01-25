@@ -19,6 +19,7 @@ struct Types {
     static std::string DYNAMIC_ARRAY;
 
     static std::string DOUBLY_LINKED_LIST;
+    static std::string SELF_ORGANIZING_SORTED_LIST;
 };
 
 std::string Types::BIT_ARRAY = "bitarray";
@@ -26,6 +27,7 @@ std::string Types::BIT_BOARD = "bitboard";
 std::string Types::CIRCULAR_BUFFER = "circular-buffer";
 std::string Types::DYNAMIC_ARRAY = "dynamic-array";
 std::string Types::DOUBLY_LINKED_LIST = "doubly-linked-list";
+std::string Types::SELF_ORGANIZING_SORTED_LIST = "self-organizing-sorted-list";
 
 } // namepsace tests
 } // namespace ultron
