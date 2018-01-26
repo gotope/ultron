@@ -25,10 +25,41 @@ public:
         , size_(0)
     {}
 
-    ~SelfOrganizingSortedList() {}
+    ~SelfOrganizingSortedList()
+    {
+        Node* cur = head_;
+        Node* tmp = cur;
+        while (cur) {
+            tmp = cur;
+            cur = cur->next;
+            delete tmp;
+        }
+    }
 
 public:
-    void InsertAt(const T& item, const std::size_t pos, bool priority = false) {}
+    void InsertAt(const T& item, const std::size_t pos, bool priority = false)
+    {
+        if (pos == 0) {
+            return PushFront(item);
+        }
+        if (pos >= size_) {
+            return PushBack(item);
+        }
+        Node* node = new Node(item);
+        std::size_t count = 0;
+        Node* cur = head_;
+        while (count != pos) {
+            ++count;
+            cur = cur->next;
+        }
+        cur->prev->next = node;
+        node->prev = cur->prev;
+        cur->prev = node;
+        node->next = cur;
+        ++size_;
+
+        PutInSortedOrder_(node);
+    }
 
     void PushFront(const T& item)
     {
@@ -42,26 +73,28 @@ public:
         head_ = node;
         ++size_;
 
-        // sorting order
-        if (!asc_head_) {
-            asc_head_ = node;
-            desc_head_ = node;
-        } else {
-            Node* cur = asc_head_;
-            while (cur->bigger && node->item > cur->item) {
-                cur = cur->bigger;
-            }
-            if (cur->smaller) {
-                cur->smaller->bigger = node;
-            }
-            node->smaller = cur->smaller;
-            cur->smaller = node;
-            node->bigger = cur;
-        }
+        PutInSortedOrder_(node);
     }
 
-    void PushBack(const T& item) {}
-    void RemoveAt(const std::size_t pos) {}
+    void PushBack(const T& item)
+    {
+        Node* node = new Node(item);
+        node->prev = tail_;
+        if (tail_) {
+            tail_->next = node;
+        } else {
+            head_ = node;
+        }
+        tail_ = node;
+        ++size_;
+
+        PutInSortedOrder_(node);
+    }
+
+    void RemoveAt(const std::size_t pos)
+    {
+    }
+
     const T GetAt(const std::size_t pos) { return T(); }
 
     const T Find(const T& item) { return T(); }
@@ -82,12 +115,12 @@ public:
         }
     }
 
-    void PrintSorted() const
+    void PrintSorted(bool asc = true) const
     {
-        Node* cur = asc_head_;
+        Node* cur = asc ? asc_head_ : desc_head_;
         while (cur) {
             std::cout << cur->item << std::endl;
-            cur = cur->bigger;
+            cur = asc ? cur->greater : cur->lesser;
         }
     }
 
@@ -97,16 +130,49 @@ protected:
             : item(elem)
             , next(nullptr)
             , prev(nullptr)
-            , smaller(nullptr)
-            , bigger(nullptr)
+            , greater(nullptr)
+            , lesser(nullptr)
         {}
 
         T item;
         Node* next;
         Node* prev;
-        Node* smaller;
-        Node* bigger;
+        Node* greater;
+        Node* lesser;
     };
+
+private:
+    void PutInSortedOrder_(Node* node)
+    {
+        if (!node) return;
+        if (!asc_head_) {
+            asc_head_ = node;
+            desc_head_ = node;
+            return;
+        }
+
+        Node* cur = asc_head_;
+        while (cur->item < node->item && cur->greater) {
+            cur = cur->greater;
+        }
+        if (cur->item < node->item) {
+            node->greater = cur->greater;
+            cur->greater = node;
+            node->lesser = cur;
+            if (!node->greater) {
+                desc_head_ = node;
+            }
+        } else {
+            node->lesser = cur->lesser;
+            if (cur->lesser) {
+                cur->lesser->greater = node;
+            } else {
+                asc_head_ = node;
+            }
+            node->greater = cur;
+            cur->lesser = node;
+        }
+    }
 
 private:
     Node* head_;
@@ -114,8 +180,6 @@ private:
     Node* asc_head_;
     Node* desc_head_;
     std::size_t size_;
-    T min_item_;
-    T max_item_;
 };
 
 } // namespace lists
