@@ -93,17 +93,84 @@ public:
 
     void RemoveAt(const std::size_t pos)
     {
+        if (pos >= size_) {
+            return;
+        }
+        Node* tmp;
+        if (pos == 0) {
+            tmp = head_;
+            head_ = head_ ? head_->next : nullptr;
+            if (head_) {
+                head_->prev = nullptr;
+            }
+        } else if (pos == size_ - 1) {
+            tmp = tail_;
+            tail_ = tail_ ? tail_->prev : nullptr;
+            if (tail_) {
+                tail_->next = nullptr;
+            }
+        } else {
+            std::size_t count = 0;
+            tmp = head_;
+            while (tmp != nullptr && count < pos) {
+                tmp = tmp->next;
+                ++count;
+            }
+            if (tmp->prev) {
+                tmp->prev->next = tmp->next;
+            }
+            if (tmp->next) {
+                tmp->next->prev = tmp->prev;
+            }
+        }
+        RemoveSortedNode_(tmp);
+        delete tmp;
     }
 
     const T GetAt(const std::size_t pos) { return T(); }
 
     const T Find(const T& item) { return T(); }
 
-    void Traverse(void (*visit)(const T&), bool forward = true) {}
-    void TraverseSorted(void (*visit)(const T&), bool asc = true) {}
+    void Traverse(void (*visit)(const T&), bool forward = true)
+    {
+        Node* cur = forward ? head_ : tail_;
+        while (cur != nullptr) {
+            visit(cur->item);
+            cur = forward ? cur->next : cur->prev;
+        }
+    }
+
+    void TraverseSorted(void (*visit)(const T&), bool asc = true)
+    {
+        Node* cur = asc ? asc_head_ : desc_head_;
+        while (cur != nullptr) {
+            visit(cur->item);
+            cur = asc ? cur->greater : cur->lesser;
+        }
+    }
+
     std::vector<T> Range(const std::size_t from, const std::size_t to)
     {
-        return std::vector<T>();
+        std::vector<T> items;
+        items.reserve(size_);
+        if (from > to) {
+            return items;
+        }
+        std::size_t count = 0;
+        Node* cur = head_;
+        while (count < from) {
+            if (cur == nullptr) {
+                return items;
+            }
+            cur = cur->next;
+            ++count;
+        }
+        while (cur != nullptr && count <= to) {
+            items.push_back(cur->item);
+            cur = cur->next;
+            ++count;
+        }
+        return items;
     }
 
     void Print() const
@@ -171,6 +238,17 @@ private:
             }
             node->greater = cur;
             cur->lesser = node;
+        }
+    }
+
+    void RemoveSortedNode_(Node* tmp)
+    {
+        if (!tmp) return;
+        if (tmp->smaller) {
+            tmp->smaller->greater = tmp->greater;
+        }
+        if (tmp->greater) {
+            tmp->greater->smaller = tmp->smaller;
         }
     }
 
