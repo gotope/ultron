@@ -20,7 +20,31 @@ struct SelfOrganizingSortedListTester
 {
     static void RunAllTests()
     {
-        TestInsertion();
+        //TestInsertion();
+        TestAdvancing();
+    }
+
+    static void TestAdvancing()
+    {
+        ultron::lists::SelfOrganizingSortedList<double> s;
+        s.PushFront(3.14);
+        s.PushFront(2.22);
+        s.PushBack(4.1);
+        s.PushBack(4.5);
+        s.InsertAt(1.3, 2);
+        s.Print();
+        std::cout << "Element at [4]: " << s.GetAt(4) << std::endl;
+        s.Print();
+        std::cout << "Element at [3]: " << s.GetAt(3) << std::endl;
+        s.Print();
+        std::cout << "Element at [2]: " << s.GetAt(2) << std::endl;
+        s.Print();
+        std::cout << "Element at [1]: " << s.GetAt(1) << std::endl;
+        s.Print();
+        std::cout << "Element at [0]: " << s.GetAt(0) << std::endl;
+        s.Print();
+        std::cout << "Find 1.3: " << s.Find(1.3) << std::endl;
+        s.Print();
     }
 
     static void TestInsertion()

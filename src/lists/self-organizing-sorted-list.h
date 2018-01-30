@@ -9,6 +9,7 @@
 #define ULTRON_LISTS_SELF_ORGANIZING_SORTED_LIST_H
 
 #include <iostream>
+#include <stdexcept>
 
 namespace ultron {
 namespace lists {
@@ -127,9 +128,33 @@ public:
         delete tmp;
     }
 
-    const T GetAt(const std::size_t pos) { return T(); }
+    const T GetAt(const std::size_t pos)
+    {
+        if (pos >= size_) {
+            throw std::out_of_range("Invalid position");
+        }
+        Node* cur = head_;
+        std::size_t count = 0;
+        while (count < pos) {
+            cur = cur->next;
+            ++count;
+        }
+        AdvanceNode_(cur);
+        return cur->item;
+    }
 
-    const T Find(const T& item) { return T(); }
+    const T Find(const T& item)
+    {
+        Node* cur = head_;
+        while (cur != nullptr) {
+            if (cur->item == item) {
+                AdvanceNode_(cur);
+                return cur->item; // makes sense when you pass T with the key required for operator==
+            }
+            cur = cur->next;
+        }
+        return T();
+    }
 
     void Traverse(void (*visit)(const T&), bool forward = true)
     {
@@ -249,6 +274,32 @@ private:
         }
         if (tmp->greater) {
             tmp->greater->smaller = tmp->smaller;
+        }
+    }
+
+    void AdvanceNode_(Node* node)
+    {
+        if (!node) return;
+        if (node == head_) return;
+        Node* lhs = node->prev;
+        Node* rhs = node->next;
+        if (lhs) {
+            if (lhs->prev) {
+                lhs->prev->next = node;
+                node->prev = lhs->prev;
+            }
+            lhs->prev = node;
+            lhs->next = rhs;
+            node->next = lhs;
+        }
+        if (rhs) {
+            rhs->prev = lhs;
+        }
+        if (lhs == head_) {
+            head_ = node;
+        }
+        if (node == tail_) {
+            tail_ = lhs;
         }
     }
 
